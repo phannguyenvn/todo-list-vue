@@ -2,7 +2,9 @@
   <div>
     <input type="text" class="todo-input" placeholder="What needs to be done" v-model="newTodo" @keyup.enter="addTodo" v-focus>
     <transition-group name="fade" enter-active-class="animated fadeInUp" leave-active-class="animated fadeOutDown">
-      <todo-item v-for="(todo, index) in todosFiltered" :key="todo.id" :todo="todo" :index="index" @removedTodo="removeTodo" @finishedEdit="finishedEdit"></todo-item>
+      <todo-item v-for="(todo, index) in todosFiltered" :key="todo.id" :todo="todo" :index="index" :checkAll="!anyRemaining"
+       @removedTodo="removeTodo" @finishedEdit="finishedEdit">
+       </todo-item>
       </transition-group>
       <div class="extra-container">
         <div><label><input type="checkbox" :checked="!anyRemaining" @change="checkAllTodos"> Check All</label></div>
@@ -99,29 +101,19 @@ export default {
       this.newTodo = "";
       this.idForTodo++;
     },
-    editTodo(todo) {
-      this.beforeEditCache = todo.title;
-      todo.editing = true;
-    },
-    doneEdit(todo) {
-      if (todo.title.trim() == "") {
-        todo.title = this.beforeEditCache;
-      }
-      todo.editing = false;
-    },
-    cancelEdit(todo) {
-      todo.title = this.beforeEditCache;
-      todo.editing = false;
-    },
+
     removeTodo(index) {
       this.todos.splice(index, 1);
     },
+
     checkAllTodos() {
-      this.todos.forEach(todo => (todo.completed = event.target.checked));
+      this.todos.forEach((todo) => todo.completed = event.target.checked)
     },
+
     clearCompleted() {
       this.todos = this.todos.filter(todo => !todo.completed);
     },
+    
     finishedEdit(data) {
       this.todos.splice(data.index, 1, data.todo)
     }
