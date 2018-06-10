@@ -60,7 +60,8 @@ export default {
   },
   methods: {
     removeTodo(index) {
-      eventBus.$emit("removedTodo", index);
+      // eventBus.$emit("removedTodo", index);
+      this.$store.state.todos.splice(index, 1);
     },
     editTodo() {
       this.beforeEditCache = this.title;
@@ -72,15 +73,12 @@ export default {
       }
       this.editing = false;
 
-      eventBus.$emit("finishedEdit", {
-        index: this.index,
-        todo: {
+      this.$store.state.todos.splice(this.index, 1, {
           id: this.id,
           title: this.title,
           completed: this.completed,
           editing: this.editing
-        }
-      })
+        });
     },
     cancelEdit() {
       this.title = this.beforeEditCache;
@@ -91,15 +89,12 @@ export default {
     },
     handlePluralize() {
       this.title = this.title + 's'
-      eventBus.$emit("finishedEdit", {
-        index: this.index,
-        todo: {
+      this.$store.state.todos.splice(this.index, 1, {
           id: this.id,
           title: this.title,
           completed: this.completed,
           editing: this.editing
-        }
-      })
+        });
     }
   }
 }
