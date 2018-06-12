@@ -6,7 +6,7 @@
     </transition-group>
     <div class="extra-container">
       <todo-check-all></todo-check-all>
-      <todo-items-remaining :remaining="remaining"></todo-items-remaining>
+      <todo-items-remaining></todo-items-remaining>
     </div>
     
      <div class="extra-container">
@@ -14,7 +14,7 @@
 
       <div>
         <transition name="fade">
-             <todo-clear-completed :showClearCompletedButton="showClearCompletedButton"></todo-clear-completed>
+             <todo-clear-completed></todo-clear-completed>
         </transition>
       </div>
     </div>
@@ -59,20 +59,12 @@ export default {
   //   eventBus.$off("clearCompletedTodos")
   // },
   computed: {
-    remaining() {
-      return this.$store.getters.remaining
-    },
-
     anyRemaining() {
       return this.$store.getters.anyRemaining
     },
 
     todosFiltered() {
       return this.$store.getters.todosFiltered
-    },
-
-    showClearCompletedButton() {
-      return this.$store.getters.showClearCompletedButton
     }
   },
   directives: {
@@ -88,7 +80,7 @@ export default {
         return;
       }
 
-      this.$store.commit('addTodo', {
+      this.$store.dispatch('addTodo', {
         id: this.idForTodo,
         title: this.newTodo
       })

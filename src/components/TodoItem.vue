@@ -7,7 +7,7 @@
         </div>
         <div>
           <button @click="pluralize">Plural</button>
-          <span class="remove-item" @click="removeTodo(index)">
+          <span class="remove-item" @click="removeTodo(id)">
             &times;
           </span>
         </div>
@@ -59,9 +59,10 @@ export default {
     }
   },
   methods: {
-    removeTodo(index) {
+    removeTodo(id) {
       // eventBus.$emit("removedTodo", index);
-      this.$store.state.todos.splice(index, 1);
+      // this.$store.state.todos.splice(index, 1);
+      this.$store.dispatch('deleteTodo', id)
     },
     editTodo() {
       this.beforeEditCache = this.title;
@@ -73,12 +74,12 @@ export default {
       }
       this.editing = false;
 
-      this.$store.state.todos.splice(this.index, 1, {
-          id: this.id,
-          title: this.title,
-          completed: this.completed,
-          editing: this.editing
-        });
+      this.$store.dispatch('updateTodo', {
+        'id': this.id,
+        'title': this.title,
+        'completed': this.completed,
+        'editing': this.editing,
+      })
     },
     cancelEdit() {
       this.title = this.beforeEditCache;

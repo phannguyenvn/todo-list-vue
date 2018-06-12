@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     changeFilter(filter) {
-      this.$store.commit('updateFilter', filter)
+      this.$store.dispatch('updateFilter', filter)
       // this.$store.state.filter = filter
       // eventBus.$emit("filterChanged", filter)
     }
