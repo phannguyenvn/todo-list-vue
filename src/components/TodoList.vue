@@ -40,9 +40,11 @@ export default {
   data() {
     return {
       newTodo: "",
-      idForTodo: 3,
       beforeEditCache: ""
     }
+  },
+  created() {
+    this.$store.dispatch('retrieveTodos')
   },
   // created() {
   //   eventBus.$on("removedTodo", index => this.removeTodo(index))
@@ -81,7 +83,6 @@ export default {
       }
 
       this.$store.dispatch('addTodo', {
-        id: this.idForTodo,
         title: this.newTodo
       })
 
@@ -93,7 +94,6 @@ export default {
       // });
 
       this.newTodo = "";
-      this.idForTodo++;
     },
 
     // checkAllTodos() {
