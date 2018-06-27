@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
+import db from '@/firebase'
 
 Vue.use(Vuex)
 axios.defaults.baseURL = 'http://todos.test/api'
@@ -68,25 +69,38 @@ export const store = new Vuex.Store({
     },
     actions: {
       retrieveTodos(context) {
-        axios.get('/todos')
-          .then(response => {
-            context.commit('retrieveTodos', response.data)
+        let tempTodos = []
+        db.collection('todos').get()
+          .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+              const data = {
+                id: doc.id,
+                title: doc.data().title,
+                completed: doc.data().completed,
+                timestamp: doc.data().timestamp,
+              }
+              tempTodos.push(data)
+            })
           })
-          .catch(error => {
-            console.log(error)
+          const tempTodosSorted = tempTodos.sort((a, b) => {
+            return a.timestamp.seconds - b.timestamp.seconds
           })
+  
+          context.commit('retrieveTodos', tempTodosSorted)
       },
       addTodo(context, todo) {
-        axios.post('/todos', {
+        db.collection('todos').add({
           title: todo.title,
           completed: false,
+          timestamp: new Date(),
         })
-          .then(response => {
-            context.commit('addTodo', response.data)
+        .then(docRef => {
+          context.commit('addTodo', {
+            id: docRef.id,
+            title: todo.title,
+            completed: false,
           })
-          .catch(error => {
-            console.log(error)
-          })
+        })
       },
       updateTodo(context, todo) {
         axios.patch('/todos/' + todo.id, {
