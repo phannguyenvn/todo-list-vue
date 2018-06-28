@@ -12,8 +12,6 @@ export default {
   },
   methods: {
     allChecked() {
-      // eventBus.$emit("checkAllChanged", this.anyRemaining);
-      // this.$store.state.todos.forEach(todo => (todo.completed = event.target.checked));
       this.$store.dispatch('checkAll', event.target.checked)
     }
   }
