@@ -49,6 +49,11 @@ export default {
   watch: {
     checkAll() {
       this.completed = this.checkAll ? true : this.todo.completed;
+    },
+    todo() {
+      console.log('watch todo')
+      this.title = this.todo.title
+      this.completed = this.todo.completed
     }
   },
   directives: {
@@ -90,12 +95,13 @@ export default {
     },
     handlePluralize() {
       this.title = this.title + 's'
-      this.$store.state.todos.splice(this.index, 1, {
-          id: this.id,
-          title: this.title,
-          completed: this.completed,
-          editing: this.editing
-        });
+      this.$store.dispatch('updateTodo', {
+        'id': this.id,
+        'title': this.title,
+        'completed': this.completed,
+        'timestamp': this.timestamp,
+        'editing': this.editing,
+      })
     }
   }
 }

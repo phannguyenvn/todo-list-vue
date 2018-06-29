@@ -53,7 +53,10 @@ export const store = new Vuex.Store({
       },
       deleteTodo(state, id) {
         const index = state.todos.findIndex(item => item.id == id)
-        state.todos.splice(index, 1)
+        console.log(index );
+        if (index >= 0) {
+          state.todos.splice(index, 1)
+        }
       },
       checkAll(state, checked) {
         state.todos.forEach(todo => (todo.completed = checked))
@@ -72,6 +75,33 @@ export const store = new Vuex.Store({
       }
     },
     actions: {
+      initRealtimeListeners(context) {
+        db.collection('todos').onSnapshot(snapshot => {
+            snapshot.docChanges.forEach(change => {
+              if (change.type === 'added') {
+                console.log(change);
+                const source = change.doc.metadata.hasPendingWrites ? 'Local' : 'Server'
+                if (source === 'Server') {
+                  context.commit('addTodo', {
+                    id: change.doc.id,
+                    title: change.doc.data().title,
+                    completed: false,
+                  })
+                }
+              }
+              if (change.type === 'modified') {
+                context.commit('updateTodo', {
+                  id: change.doc.id,
+                  title: change.doc.data().title,
+                  completed: change.doc.data().completed,
+                })
+              }
+              if (change.type === 'removed') {
+                context.commit('deleteTodo', change.doc.id)
+              }
+            })
+          })
+      },
       retrieveTodos(context) {
         context.commit('updateLoading', true)
         let tempTodos = []
