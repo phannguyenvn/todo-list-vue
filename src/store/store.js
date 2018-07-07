@@ -84,6 +84,7 @@ export const store = new Vuex.Store({
         context.commit('clearTodos')
       },
       retrieveTodos(context) {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + context.state.token
         axios.get('/todos')
           .then(response => {
             context.commit('retrieveTodos', response.data)
@@ -144,17 +145,17 @@ export const store = new Vuex.Store({
         .filter(todo => todo.completed)
         .map(todo => todo.id)
 
-      axios.delete('/todosDeleteCompleted', {
-        data: {
-          todos: completed
-        }
-      })
-        .then(response => {
-          context.commit('clearCompleted')
+        axios.delete('/todosDeleteCompleted', {
+          data: {
+            todos: completed
+          }
         })
-        .catch(error => {
-          console.log(error)
-        })
+          .then(response => {
+            context.commit('clearCompleted')
+          })
+          .catch(error => {
+            console.log(error)
+          })
       },
       retrieveToken(context, credentials) {
         return new Promise((resolve, reject) => {
